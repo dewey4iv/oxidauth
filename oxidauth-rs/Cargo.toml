@@ -1,7 +1,14 @@
 [package]
 name = "oxidauth-rs"
+description = "A rust client for the oxidauth service"
 version = "0.1.0"
 edition = "2021"
+license = "GNU GPLv3"
+readme = "README.md"
+homepage = "https://github.com/dewey4iv/oxidauth-rs"
+documentation = "https://docs.rs/oxidauth-rs"
+repository = "https://github.com/dewey4iv/oxidauth"
+authors = ["George Wheeler <georgewheeler.iv@me.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
