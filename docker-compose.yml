@@ -1,0 +1,32 @@
+version: '2.4'
+
+services:
+  postgres:
+    image: postgres:15.1
+    platform: $DOCKER_COMPOSE_PLATFORM
+    environment:
+      POSTGRES_DB: oxidauth
+      POSTGRES_USER: oxidauth
+      POSTGRES_PASSWORD: oxidauth
+    ports:
+      - "5432:5432"
+    volumes:
+      - 'postgres-data-vol:/var/lib/postgresql/data'
+
+  server:
+    working_dir: '/home/rust/src/oxidauth/oxidauth'
+    command: /bin/bash -c 'cargo watch -c -- cargo run'
+    image: registry.vizerapp.cloud/lib/rust-dev:$RUST_DEV_IMAGE_VERSION
+    platform: $DOCKER_COMPOSE_PLATFORM
+    stdin_open: true
+    tty: true
+    ports:
+      - "3001:80"
+    volumes:
+      - ".:/home/rust/src/oxidauth:cached"
+      - "server-vol:/home/rust/src/oxidauth/target"
+
+volumes:
+  postgres-data-vol: {}
+  server-vol: {}
+
