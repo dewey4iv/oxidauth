@@ -1,6 +1,34 @@
 version: '2.4'
 
 services:
+  server:
+    working_dir: '/home/rust/src/oxidauth/oxidauth'
+    command: /bin/bash -c 'cargo watch -c -- cargo run'
+    image: registry.vizerapp.cloud/lib/rust-dev:$RUST_DEV_IMAGE_VERSION
+    platform: $DOCKER_COMPOSE_PLATFORM
+    stdin_open: true
+    tty: true
+    ports:
+      - "3001:80"
+    volumes:
+      - ".:/home/rust/src/oxidauth:cached"
+      - "server-cache-vol:/home/rust/src/oxidauth/target"
+
+
+  web:
+    working_dir: '/home/node/src/oxidauth/oxidauth-web'
+    command: /bin/sh -c 'yarn && yarn dev --host 0.0.0.0 --port 80'
+    image: node:19-alpine3.16
+    platform: $DOCKER_COMPOSE_PLATFORM
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:80"
+    volumes:
+      - "./oxidauth-web:/home/node/src/oxidauth/oxidauth-web:cached"
+      - "web-cache-vol:/home/node/src/oxidauth/oxidauth-web/node_modules"
+
+
   postgres:
     image: postgres:15.1
     platform: $DOCKER_COMPOSE_PLATFORM
@@ -13,20 +41,8 @@ services:
     volumes:
       - 'postgres-data-vol:/var/lib/postgresql/data'
 
-  server:
-    working_dir: '/home/rust/src/oxidauth/oxidauth'
-    command: /bin/bash -c 'cargo watch -c -- cargo run'
-    image: registry.vizerapp.cloud/lib/rust-dev:$RUST_DEV_IMAGE_VERSION
-    platform: $DOCKER_COMPOSE_PLATFORM
-    stdin_open: true
-    tty: true
-    ports:
-      - "3001:80"
-    volumes:
-      - ".:/home/rust/src/oxidauth:cached"
-      - "server-vol:/home/rust/src/oxidauth/target"
 
 volumes:
   postgres-data-vol: {}
-  server-vol: {}
-
+  server-cache-vol: {}
+  web-cache-vol: {}
